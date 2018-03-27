@@ -20,15 +20,18 @@ server.listen(PORT, () => {
 })
 
 function ioOnConnection(socket) {
-
-	socket.emit('newMessage', {
-		from: 'John',
-		text: 'See you then',
-		createdAt: 12323423,
-	})
+	console.log('New user connected.')
 
 	socket.on('createMessage', function socketOnCreateMessage(message) {
 		console.log('createMessage', message)
+
+		const { from, text } = message
+
+		io.emit('newMessage', {
+			from,
+			text,
+			createdAt: new Date().getTime(),
+		})
 	})
 
 	socket.on('disconnect', function socketOnDisconnect() {
