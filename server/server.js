@@ -13,14 +13,27 @@ const io = socketIO(server)
 
 app.use(express.static(publicPath))
 
-io.on('connection', function ioOnConnection(socket) {
-	console.log('New user connected')
-
-	socket.on('disconnect', function socketOnDisconnect() {
-		console.log('User was disconnected')
-	})
-})
+io.on('connection', ioOnConnection)
 
 server.listen(PORT, () => {
 	console.log(`Server is up on port ${PORT}`)
 })
+
+function ioOnConnection(socket) {
+
+	socket.emit('newMessage', {
+		from: 'John',
+		text: 'See you then',
+		createdAt: 12323423,
+	})
+
+	socket.on('createMessage', function socketOnCreateMessage(message) {
+		console.log('createMessage', message)
+	})
+
+	socket.on('disconnect', function socketOnDisconnect() {
+		console.log('User was disconnected')
+	})
+
+}
+
