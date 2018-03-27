@@ -23,21 +23,44 @@ server.listen(PORT, () => {
 function ioOnConnection(socket) {
 	console.log('New user connected.')
 
-	socket.on('createMessage', function socketOnCreateMessage(message) {
-		console.log('createMessage', message)
+	const broadcastNewMessage = {
+		from: 'Admin',
+		text: 'Welcome to the chat app!'
+	}
 
-		const { from, text } = message
+	const broadcastEmitCreateMessage = {
+		from: 'Admin',
+		text: 'A new user joined the chat.',
+		createdAt: newDate(),
+
+	}
+
+	socket.emit('newMessage', broadcastNewMessage)
+	socket.broadcast.emit('newMessage', broadcastEmitCreateMessage )
+
+	socket.on('createMessage', socketOnCreateMessage)
+	socket.on('disconnect', socketOnDisconnect)
+
+	function socketOnCreateMessage({ from, text }) {
+		console.log('createMessage', { from, text })
 
 		io.emit('newMessage', {
 			from,
 			text,
-			createdAt: new Date().getTime(),
+			createdAt: newDate(),
 		})
-	})
 
-	socket.on('disconnect', function socketOnDisconnect() {
+//     socket.broadcast.emit('newMessage', {
+//       from,
+//       text,
+//       createdAt: newDate(),
+
+//     })
+	}
+
+	function socketOnDisconnect() {
 		console.log('User was disconnected')
-	})
+	}
 
 }
 
