@@ -4,7 +4,7 @@ const express = require('express')
 const socketIO = require('socket.io')
 
 const { PORT } = require('./config')
-const { newDate } = require('../utils')
+const { generateMessage } = require('./utils/message')
 
 const publicPath = path.join(__dirname, '../public')
 
@@ -23,20 +23,12 @@ server.listen(PORT, () => {
 function ioOnConnection(socket) {
 	console.log('New user connected.')
 
-	const broadcastNewMessage = {
-		from: 'Admin',
-		text: 'Welcome to the chat app!'
-	}
+	const welcomeText = 'Welcome to the chat app!'
+	const newUserJoinedText = 'A new user joined the chat!'
 
-	const broadcastEmitCreateMessage = {
-		from: 'Admin',
-		text: 'A new user joined the chat.',
-		createdAt: newDate(),
-
-	}
-
-	socket.emit('newMessage', broadcastNewMessage)
-	socket.broadcast.emit('newMessage', broadcastEmitCreateMessage )
+	socket.emit('newMessage', generateMessage('Admin', welcomeText))
+	socket.broadcast
+		.emit('newMessage', generateMessage('Admin', newUserJoinedText))
 
 	socket.on('createMessage', socketOnCreateMessage)
 	socket.on('disconnect', socketOnDisconnect)
@@ -44,11 +36,7 @@ function ioOnConnection(socket) {
 	function socketOnCreateMessage({ from, text }) {
 		console.log('createMessage', { from, text })
 
-		io.emit('newMessage', {
-			from,
-			text,
-			createdAt: newDate(),
-		})
+		io.emit('newMessage', generateMessage(from, text))
 
 //     socket.broadcast.emit('newMessage', {
 //       from,
