@@ -33,10 +33,11 @@ function ioOnConnection(socket) {
 	socket.on('createMessage', socketOnCreateMessage)
 	socket.on('disconnect', socketOnDisconnect)
 
-	function socketOnCreateMessage({ from, text }) {
+	function socketOnCreateMessage({ from, text }, callback) {
 		console.log('createMessage', { from, text })
 
 		io.emit('newMessage', generateMessage(from, text))
+		callback('This is from the server.')
 
 //     socket.broadcast.emit('newMessage', {
 //       from,
