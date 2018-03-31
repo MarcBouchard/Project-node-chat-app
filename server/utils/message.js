@@ -1,5 +1,11 @@
 const { newDate } = require('../../utils')
 
+module.exports = {
+	generateMessage,
+	generateLocationMessage,
+}
+
+
 function generateMessage(from, text) {
 	return {
 		from,
@@ -15,7 +21,4 @@ function generateLocationMessage(from, latitude, longitude) {
 		createdAt: newDate(),
 	}
 }
-module.exports = {
-	generateMessage,
-	generateLocationMessage,
-}
+
