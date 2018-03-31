@@ -20,9 +20,7 @@ app.use(express.static(publicPath))
 
 io.on('connection', ioOnConnection)
 
-server.listen(PORT, () => {
-	console.log(`Server is up on port ${PORT}`)
-})
+server.listen(PORT, onServerListen)
 
 
 
@@ -64,3 +62,6 @@ function ioOnConnection(socket) {
 
 }
 
+function onServerListen() {
+	console.log(`Server is up on port ${PORT}`)
+}
