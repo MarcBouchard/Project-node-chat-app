@@ -4,7 +4,11 @@ const express = require('express')
 const socketIO = require('socket.io')
 
 const { PORT } = require('./config')
-const { generateMessage } = require('./utils/message')
+const {
+	generateMessage,
+	generateLocationMessage,
+} = require('./utils/message')
+
 
 const publicPath = path.join(__dirname, '../public')
 
@@ -20,6 +24,9 @@ server.listen(PORT, () => {
 	console.log(`Server is up on port ${PORT}`)
 })
 
+
+
+// **********************************************
 function ioOnConnection(socket) {
 	console.log('New user connected.')
 
@@ -32,19 +39,23 @@ function ioOnConnection(socket) {
 
 	socket.on('createMessage', socketOnCreateMessage)
 	socket.on('disconnect', socketOnDisconnect)
+	socket.on('createLocationMessage', socketOnCreateLocationMessage)
+
+
+
+	// *********************************************
+	function socketOnCreateLocationMessage({ latitude, longitude }) {
+		io.emit(
+			'newLocationMessage',
+			generateLocationMessage('Admin',  latitude, longitude),
+		)
+	}
 
 	function socketOnCreateMessage({ from, text }, callback) {
 		console.log('createMessage', { from, text })
 
 		io.emit('newMessage', generateMessage(from, text))
 		callback('This is from the server.')
-
-//     socket.broadcast.emit('newMessage', {
-//       from,
-//       text,
-//       createdAt: newDate(),
-
-//     })
 	}
 
 	function socketOnDisconnect() {
