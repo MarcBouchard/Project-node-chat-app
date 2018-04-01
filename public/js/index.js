@@ -57,13 +57,11 @@ function onClickLocationButton(e) {
 		return alert('Geolocation not supported by your browser.')
 	}
 
-
 	navigator.geolocation
 		.getCurrentPosition(getCurrentPositionCB, getCurrentPositionError)
 
 
-
-	// ********************************************
+	// *****************************************************************
 	function getCurrentPositionCB (position) {
 		console.log(position)
 		socket.emit('createLocationMessage', {
