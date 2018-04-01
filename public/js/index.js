@@ -28,8 +28,8 @@ function socketOnNewMessage(message) {
 	var	li = jQuery('<li></li>')
 	li.text(`${message.from}: ${message.text}`)
 
-	jQuery('#messages').append(li)
-})
+	messagesElement.append(li)
+}
 
 function socketOnNewLocationMessage(message) {
 	var	li = jQuery('<li></li>')
@@ -39,7 +39,7 @@ function socketOnNewLocationMessage(message) {
 	a.attr('href', message.url)
 	li.append(a)
 
-	jQuery('#messages').append(li)
+	messagesElement.append(li)
 
 }
 
