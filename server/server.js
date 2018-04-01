@@ -24,7 +24,7 @@ server.listen(PORT, onServerListen)
 
 
 
-// **********************************************
+// ******************************************************************
 function ioOnConnection(socket) {
 	console.log('New user connected.')
 
