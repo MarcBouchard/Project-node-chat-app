@@ -1,15 +1,29 @@
 const socket = io()
 
-socket.on('connect', function socketOnConnect() {
+const messageForm = jQuery('#message-form')
+const locationButton = jQuery('#send-location')
+const messagesElement = jQuery('#messages')
+
+socket.on('connect', socketOnConnect)
+socket.on('disconnect', socketOnDisconnect)
+socket.on('newMessage', socketOnNewMessage)
+socket.on('newLocationMessage', socketOnNewLocationMessage)
+
+messageForm.on('submit', submitMessageForm)
+locationButton.on('click', onClickLocationButton)
+
+
+// *******************************************************************
+function socketOnConnect() {
 	console.log('Connected to server')
 
-})
+}
 
-socket.on('disconnect', function socketOnDisconnect() {
+function socketOnDisconnect() {
 	console.log('Disconnected from server')
-})
+}
 
-socket.on('newMessage', function socketOnNewMessage(message) {
+function socketOnNewMessage(message) {
 	console.log(message)
 	var	li = jQuery('<li></li>')
 	li.text(`${message.from}: ${message.text}`)
@@ -17,23 +31,6 @@ socket.on('newMessage', function socketOnNewMessage(message) {
 	jQuery('#messages').append(li)
 })
 
-socket.on('newLocationMessage', socketOnNewLocationMessage)
-
-jQuery('#message-form').on('submit', function submitMessageForm(e) {
-	e.preventDefault()
-
-	socket.emit('createMessage', {
-		from: 'User',
-		text: jQuery('[name=message]').val()
-	}, function formMessageCB() { })
-})
-
-const locationButton = jQuery('#send-location')
-
-locationButton.on('click', onClickLocationButton)
-
-
-// **********************************************
 function socketOnNewLocationMessage(message) {
 	var	li = jQuery('<li></li>')
 	var a = jQuery('<a target="_blank">My current location</a>')
@@ -44,6 +41,15 @@ function socketOnNewLocationMessage(message) {
 
 	jQuery('#messages').append(li)
 
+}
+
+function submitMessageForm(e) {
+	e.preventDefault()
+
+	socket.emit('createMessage', {
+		from: 'User',
+		text: jQuery('[name=message]').val()
+	}, function formMessageCB() { })
 }
 
 function onClickLocationButton(e) {
