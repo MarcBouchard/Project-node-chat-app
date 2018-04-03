@@ -24,25 +24,29 @@ function socketOnDisconnect() {
 }
 
 function socketOnNewMessage(message) {
-	const formattedTime = moment(message.createdAt).format('h:mm a')
+	const timeStamp = moment(message.createdAt).format('h:mm a')
+	const template = jQuery('#message-template').html()
+	let html = Mustache.render(template, {
+		text: message.text,
+		from: message.from,
+		timeStamp,
+	})
 
-	var	li = jQuery('<li></li>')
-	li.text(`${message.from} ${formattedTime}: ${message.text}`)
+	messagesElement.append(html)
 
-	messagesElement.append(li)
 }
 
-function socketOnNewLocationMessage(message) {
-	const formattedTime = moment(message.createdAt).format('h:mm a')
+function socketOnNewLocationMessage({ from, url, createdAt }) {
+	const timeStamp = moment(createdAt).format('h:mm a')
 
-	var	li = jQuery('<li></li>')
-	var a = jQuery('<a target="_blank">My current location</a>')
+	let template = jQuery('#location-message-template').html()
+	const html = Mustache.render(template, {
+		from,
+		url,
+		timeStamp,
+	})
 
-	li.text(`${message.from} ${formattedTime}: `)
-	a.attr('href', message.url)
-	li.append(a)
-
-	messagesElement.append(li)
+	messagesElement.append(html)
 
 }
 
