@@ -53,7 +53,7 @@ function ioOnConnection(socket) {
 		console.log('createMessage', { from, text })
 
 		io.emit('newMessage', generateMessage(from, text))
-		callback('This is from the server.')
+		callback()
 	}
 
 	function socketOnDisconnect() {

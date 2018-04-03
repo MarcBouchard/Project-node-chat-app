@@ -10,7 +10,7 @@ socket.on('newMessage', socketOnNewMessage)
 socket.on('newLocationMessage', socketOnNewLocationMessage)
 
 messageForm.on('submit', submitMessageForm)
-locationButton.on('click', onClickLocationButton)
+locationButton.on('click', locationButtonOnClickCB)
 
 
 // *******************************************************************
@@ -44,18 +44,30 @@ function socketOnNewLocationMessage(message) {
 }
 
 function submitMessageForm(e) {
+	const messageTextBox = jQuery('[name=message]')
+
 	e.preventDefault()
 
 	socket.emit('createMessage', {
 		from: 'User',
-		text: jQuery('[name=message]').val()
-	}, function formMessageCB() { })
+		text: messageTextBox.val()
+	}, formMessageCB)
+
+
+	// *****************************************************************
+	function formMessageCB() {
+		messageTextBox.val('')
+
+
+	}
 }
 
-function onClickLocationButton(e) {
+function locationButtonOnClickCB(e) {
 	if (!navigator.geolocation) {
 		return alert('Geolocation not supported by your browser.')
 	}
+
+	locationButton.attr('disabled', 'disabled').text('Sending location...')
 
 	navigator.geolocation
 		.getCurrentPosition(getCurrentPositionCB, getCurrentPositionError)
@@ -63,6 +75,7 @@ function onClickLocationButton(e) {
 
 	// *****************************************************************
 	function getCurrentPositionCB (position) {
+		locationButton.removeAttr('disabled').text('Send location')
 		console.log(position)
 		socket.emit('createLocationMessage', {
 			latitude: position.coords.latitude,
@@ -71,6 +84,7 @@ function onClickLocationButton(e) {
 	}
 
 	function getCurrentPositionError (error) {
+		locationButton.removeAttr('disabled').text('Send location')
 		alert('Unable to fetch location', error)
 	}
 
