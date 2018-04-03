@@ -1,6 +1,8 @@
+const moment = require('moment')
+
 module.exports = {
 	newDate: function newDateMethod() {
-		return new Date().getTime()
+		return moment().valueOf()
 	},
-	
+
 }
