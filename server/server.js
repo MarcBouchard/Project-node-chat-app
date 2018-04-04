@@ -4,6 +4,7 @@ const express = require('express')
 const socketIO = require('socket.io')
 
 const { PORT } = require('./config')
+const Users = require('./utils/users')
 const {
 	isRealString,
 	generateMessage,
@@ -15,6 +16,7 @@ const publicPath = path.join(__dirname, '../public')
 const app = express()
 const server = http.createServer(app)
 const io = socketIO(server)
+const users = new Users()
 
 app.use(express.static(publicPath))
 
@@ -37,14 +39,18 @@ function ioOnConnection(socket) {
 
 	// *****************************************************************
 	function socketOnJoinCB({ name, room }, callback) {
-		if (!isRealString(name) || !isRealString(room)) {
-			callback('Name and room name are required.')
-		}
+		if (!isRealString(name) || !isRealString(room))
+			return callback('Name and room name are required.')
+
+
 		socket.join(room)
+		users.removeUser(socket.id)
+		users.addUser(socket.id, name, room)
 
 		const welcomeText = 'Welcome to the chat app!'
 		const newUserJoinedText = `${name} has joined!`
 
+		io.to(room).emit('updateUserList', users.getUserList(room))
 		socket.emit('newMessage', generateMessage('Admin', welcomeText))
 		socket.broadcast.to(room)
 			.emit('newMessage', generateMessage('Admin', newUserJoinedText))

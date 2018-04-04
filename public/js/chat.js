@@ -7,6 +7,7 @@ const messagesElement = jQuery('#messages')
 socket.on('connect', socketOnConnect)
 socket.on('disconnect', socketOnDisconnect)
 socket.on('newMessage', socketOnNewMessage)
+socket.on('updateUserList', socketOnUpdateUserList)
 socket.on('newLocationMessage', socketOnNewLocationMessage)
 
 messageForm.on('submit', submitMessageForm)
@@ -50,6 +51,16 @@ function socketOnNewMessage(message) {
 	messagesElement.append(html)
 	scrollToBottom()
 
+}
+
+function socketOnUpdateUserList(users) {
+	const ol = jQuery('<ol></ol>')
+
+	users.forEach(function usersForEachCB(user) {
+		ol.append(jQuery('<li></li>').text(user))
+	})
+
+	jQuery('#users').html(ol)
 }
 
 function socketOnNewLocationMessage({ from, url, createdAt }) {
