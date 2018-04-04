@@ -1,8 +1,12 @@
 const socket = io()
 
 const messageForm = jQuery('#message-form')
+const usersElement = jQuery('#users')
+const messageTextBox = jQuery('[name=message]')
 const locationButton = jQuery('#send-location')
 const messagesElement = jQuery('#messages')
+const messageTemplate = jQuery('#message-template').html()
+const locationMessageTemplate = jQuery('#location-message-template').html()
 
 socket.on('connect', socketOnConnect)
 socket.on('disconnect', socketOnDisconnect)
@@ -41,8 +45,7 @@ function socketOnDisconnect() {
 
 function socketOnNewMessage(message) {
 	const timeStamp = moment(message.createdAt).format('h:mm a')
-	const template = jQuery('#message-template').html()
-	let html = Mustache.render(template, {
+	const html = Mustache.render(messageTemplate, {
 		text: message.text,
 		from: message.from,
 		timeStamp,
@@ -60,13 +63,13 @@ function socketOnUpdateUserList(users) {
 		ol.append(jQuery('<li></li>').text(user))
 	})
 
-	jQuery('#users').html(ol)
+	usersElement.html(ol)
 }
 
 function socketOnNewLocationMessage({ from, url, createdAt }) {
 	const timeStamp = moment(createdAt).format('h:mm a')
 
-	let template = jQuery('#location-message-template').html()
+	const template = locationMessageTemplate
 	const html = Mustache.render(template, {
 		from,
 		url,
@@ -81,7 +84,6 @@ function socketOnNewLocationMessage({ from, url, createdAt }) {
 
 //---------------------------------------------------- Dom Elements --
 function submitMessageForm(e) {
-	const messageTextBox = jQuery('[name=message]')
 
 	e.preventDefault()
 
