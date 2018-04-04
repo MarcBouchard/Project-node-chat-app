@@ -33,6 +33,7 @@ function socketOnNewMessage(message) {
 	})
 
 	messagesElement.append(html)
+	scrollToBottom()
 
 }
 
@@ -47,6 +48,7 @@ function socketOnNewLocationMessage({ from, url, createdAt }) {
 	})
 
 	messagesElement.append(html)
+	scrollToBottom()
 
 }
 
@@ -95,4 +97,19 @@ function locationButtonOnClickCB(e) {
 		alert('Unable to fetch location', error)
 	}
 
+}
+
+function scrollToBottom(argument) {
+	const newMessage = messagesElement.children('li:last-child')
+	const clientHeight = messagesElement.prop('clientHeight')
+	const scrollTop = messagesElement.prop('scrollTop')
+	const scrollHeight = messagesElement.prop('scrollHeight')
+	const newMessageHeight = newMessage.innerHeight()
+	const lastMessageHeight = newMessage.prev().innerHeight()
+
+	const totalHeight = clientHeight + scrollTop + newMessageHeight + lastMessageHeight
+
+	if (totalHeight >= scrollHeight) {
+		messagesElement.scrollTop(scrollHeight)
+	}
 }
