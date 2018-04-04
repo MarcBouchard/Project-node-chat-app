@@ -28,20 +28,30 @@ server.listen(PORT, onServerListen)
 function ioOnConnection(socket) {
 	console.log('New user connected.')
 
-	const welcomeText = 'Welcome to the chat app!'
-	const newUserJoinedText = 'A new user joined the chat!'
-
-	socket.emit('newMessage', generateMessage('Admin', welcomeText))
-	socket.broadcast
-		.emit('newMessage', generateMessage('Admin', newUserJoinedText))
-
+	socket.on('join', socketOnJoinCB)
 	socket.on('createMessage', socketOnCreateMessage)
 	socket.on('disconnect', socketOnDisconnect)
 	socket.on('createLocationMessage', socketOnCreateLocationMessage)
 
 
 
-	// *********************************************
+	// *****************************************************************
+	function socketOnJoinCB({ name, room }, callback) {
+		if (!isRealString(name) || !isRealString(room)) {
+			callback('Name and room name are required.')
+		}
+		socket.join(room)
+
+		const welcomeText = 'Welcome to the chat app!'
+		const newUserJoinedText = `${name} has joined!`
+
+		socket.emit('newMessage', generateMessage('Admin', welcomeText))
+		socket.broadcast.to(room)
+			.emit('newMessage', generateMessage('Admin', newUserJoinedText))
+
+		callback()
+	}
+
 	function socketOnCreateLocationMessage({ latitude, longitude }) {
 		io.emit(
 			'newLocationMessage',
@@ -62,6 +72,8 @@ function ioOnConnection(socket) {
 
 }
 
+
+// *******************************************************************
 function onServerListen() {
 	console.log(`Server is up on port ${PORT}`)
 }

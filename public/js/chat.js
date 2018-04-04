@@ -15,8 +15,21 @@ locationButton.on('click', locationButtonOnClickCB)
 
 // *******************************************************************
 function socketOnConnect() {
-	console.log('Connected to server')
+	const params = jQuery.deparam(window.location.search)
 
+	socket.emit('join', params, socketEmitJoinCB)
+
+
+
+	// *****************************************************************
+	function socketEmitJoinCB(error) {
+		if (error) {
+			alert(error)
+			window.location.href = '/'
+		} else {
+			console.log('No error')
+		}
+	}
 }
 
 function socketOnDisconnect() {
