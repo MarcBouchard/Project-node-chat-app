@@ -59,10 +59,17 @@ function ioOnConnection(socket) {
 	}
 
 	function socketOnCreateLocationMessage({ latitude, longitude }) {
-		io.emit(
-			'newLocationMessage',
-			generateLocationMessage('Admin',  latitude, longitude),
-		)
+		const user = users.getUser(socket.id)
+
+		if (user) {
+			const { name, room } = user
+
+			io.to(room).emit(
+				'newLocationMessage',
+				generateLocationMessage(name,  latitude, longitude),
+			)
+
+		}
 	}
 
 	function socketOnCreateMessage({ from, text }, callback) {
@@ -70,6 +77,7 @@ function ioOnConnection(socket) {
 
 		if (user && isRealString(text)) {
 			const { name, room } = user
+
 			io.to(room).emit('newMessage', generateMessage(name, text))
 		}
 		callback()
