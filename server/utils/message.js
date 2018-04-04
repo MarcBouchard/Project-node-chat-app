@@ -3,6 +3,7 @@ const { newDate } = require('../../utils')
 module.exports = {
 	isRealString,
 	generateMessage,
+	generateAdminMessage,
 	generateLocationMessage,
 }
 
@@ -18,6 +19,10 @@ function generateMessage(from, text) {
 		text,
 		createdAt: newDate(),
 	}
+}
+
+function generateAdminMessage(text) {
+	return generateMessage('Admin', text)
 }
 
 function generateLocationMessage(from, latitude, longitude) {

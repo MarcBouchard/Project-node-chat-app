@@ -8,6 +8,7 @@ const Users = require('./utils/users')
 const {
 	isRealString,
 	generateMessage,
+	generateAdminMessage,
 	generateLocationMessage,
 } = require('./utils/message')
 
@@ -51,9 +52,9 @@ function ioOnConnection(socket) {
 		const newUserJoinedText = `${name} has joined!`
 
 		io.to(room).emit('updateUserList', users.getUserList(room))
-		socket.emit('newMessage', generateMessage('Admin', welcomeText))
+		socket.emit('newMessage', generateAdminMessage(welcomeText))
 		socket.broadcast.to(room)
-			.emit('newMessage', generateMessage('Admin', newUserJoinedText))
+			.emit('newMessage', generateAdminMessage(newUserJoinedText))
 
 		callback()
 	}
@@ -91,7 +92,7 @@ function ioOnConnection(socket) {
 			const message = `${name} has left the chat.`
 
 			io.to(room).emit('updateUserList', users.getUserList(room))
-			io.to(room).emit('newMessage', generateMessage('Admin', message))
+			io.to(room).emit('newMessage', generateAdminMessage(message))
 		}
 	}
 }
