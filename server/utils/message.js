@@ -1,10 +1,16 @@
 const { newDate } = require('../../utils')
 
 module.exports = {
+	isRealString,
 	generateMessage,
 	generateLocationMessage,
 }
 
+
+// *******************************************************************
+function isRealString(str) {
+	return typeof str === 'string' && str.trim().length > 0
+}
 
 function generateMessage(from, text) {
 	return {
@@ -21,4 +27,3 @@ function generateLocationMessage(from, latitude, longitude) {
 		createdAt: newDate(),
 	}
 }
-

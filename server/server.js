@@ -5,10 +5,10 @@ const socketIO = require('socket.io')
 
 const { PORT } = require('./config')
 const {
+	isRealString,
 	generateMessage,
 	generateLocationMessage,
 } = require('./utils/message')
-
 
 const publicPath = path.join(__dirname, '../public')
 
