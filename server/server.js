@@ -73,9 +73,16 @@ function ioOnConnection(socket) {
 	}
 
 	function socketOnDisconnect() {
-		console.log('User was disconnected')
-	}
+		const user = users.removeUser(socket.id)
 
+		if (user) {
+			const { room, name } = user
+			const message = `${name} has left the chat.`
+
+			io.to(room).emit('updateUserList', users.getUserList(room))
+			io.to(room).emit('newMessage', generateMessage('Admin', message))
+		}
+	}
 }
 
 
