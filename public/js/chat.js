@@ -13,7 +13,9 @@ messageForm.on('submit', submitMessageForm)
 locationButton.on('click', locationButtonOnClickCB)
 
 
+
 // *******************************************************************
+//------------------------------------------------ Socket Functions --
 function socketOnConnect() {
 	const params = jQuery.deparam(window.location.search)
 
@@ -65,6 +67,8 @@ function socketOnNewLocationMessage({ from, url, createdAt }) {
 
 }
 
+
+//---------------------------------------------------- Dom Elements --
 function submitMessageForm(e) {
 	const messageTextBox = jQuery('[name=message]')
 
@@ -112,6 +116,8 @@ function locationButtonOnClickCB(e) {
 
 }
 
+
+//------------------------------------------------ Helper Functions --
 function scrollToBottom(argument) {
 	const newMessage = messagesElement.children('li:last-child')
 	const clientHeight = messagesElement.prop('clientHeight')
